@@ -51,13 +51,24 @@ async function createUser(request, response, next) {
     const email = request.body.email;
     const password = request.body.password;
 
-    if (!success) {
+    //Jika email sudah terdaftar sebelumnya,
+    // maka kembalikan error dengan status code 409(EMAIL_ALREADY_TAKEN).
+    const emailTaken = await usersService.isEmailTaken(email);
+    if (emailTaken) {
       throw errorResponder(
-        errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to create user'
+        errorTypes.EMAIL_ALREADY_TAKEN,
+        'EMAIL_ALREADY_TAKEN'
       );
+    } else if (!emailTaken) {
+      const success = await usersService.createUser(name, email, password);
+      if (!success) {
+        throw errorResponder(
+          errorTypes.UNPROCESSABLE_ENTITY,
+          'Failed to create user'
+        );
+      }
+      return response.status(200).json({ name, email });
     }
-    return response.status(200).json({ name, email });
   } catch (error) {
     return next(error);
   }
