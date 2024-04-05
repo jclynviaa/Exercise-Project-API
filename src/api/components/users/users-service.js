@@ -109,7 +109,7 @@ async function deleteUser(id) {
 
 async function isEmailTaken(email) {
   try {
-    const emailExists = await usersRepository.isEmailTaken(email);
+    const emailExists = await usersRepository.checkEmailExists(email);
     return emailExists;
   } catch (err) {
     throw err;
