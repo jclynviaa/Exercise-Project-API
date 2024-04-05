@@ -107,10 +107,20 @@ async function deleteUser(id) {
   return true;
 }
 
+async function isEmailTaken(email) {
+  try {
+    const emailExists = await usersRepository.isEmailTaken(email);
+    return emailExists;
+  } catch (err) {
+    throw err;
+  }
+}
+
 module.exports = {
   getUsers,
   getUser,
   createUser,
   updateUser,
   deleteUser,
+  isEmailTaken,
 };
