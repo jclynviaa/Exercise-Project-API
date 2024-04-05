@@ -54,12 +54,12 @@ async function createUser(request, response, next) {
     //Jika email sudah terdaftar sebelumnya,
     // maka kembalikan error dengan status code 409(EMAIL_ALREADY_TAKEN).
     const emailTaken = await usersService.isEmailTaken(email);
-    if (emailTaken) {
+    if (emailTaken == true) {
       throw errorResponder(
         errorTypes.EMAIL_ALREADY_TAKEN,
         'EMAIL_ALREADY_TAKEN'
       );
-    } else if (!emailTaken) {
+    } else if (emailTaken == false) {
       const success = await usersService.createUser(name, email, password);
       if (!success) {
         throw errorResponder(
@@ -87,15 +87,24 @@ async function updateUser(request, response, next) {
     const name = request.body.name;
     const email = request.body.email;
 
-    const success = await usersService.updateUser(id, name, email);
-    if (!success) {
+    //Jika email sudah terdaftar sebelumnya,
+    // maka kembalikan error dengan status code 409(EMAIL_ALREADY_TAKEN).
+    const emailTaken = await usersService.isEmailTaken(email);
+    if (emailTaken == true) {
       throw errorResponder(
-        errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to update user'
+        errorTypes.EMAIL_ALREADY_TAKEN,
+        'EMAIL_ALREADY_TAKEN'
       );
+    } else if (emailTaken == false) {
+      const success = await usersService.createUser(name, email, password);
+      if (!success) {
+        throw errorResponder(
+          errorTypes.UNPROCESSABLE_ENTITY,
+          'Failed to create user'
+        );
+      }
+      return response.status(200).json({ name, email });
     }
-
-    return response.status(200).json({ id });
   } catch (error) {
     return next(error);
   }
