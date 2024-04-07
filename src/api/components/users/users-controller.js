@@ -96,14 +96,14 @@ async function updateUser(request, response, next) {
         'EMAIL_ALREADY_TAKEN'
       );
     } else if (emailTaken == false) {
-      const success = await usersService.createUser(name, email, password);
+      const success = await usersService.updateUser(id, name, email);
       if (!success) {
         throw errorResponder(
           errorTypes.UNPROCESSABLE_ENTITY,
           'Failed to create user'
         );
       }
-      return response.status(200).json({ name, email });
+      return response.status(200).json({ id });
     }
   } catch (error) {
     return next(error);
