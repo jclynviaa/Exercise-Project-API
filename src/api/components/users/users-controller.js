@@ -95,7 +95,7 @@ async function updateUser(request, response, next) {
         errorTypes.EMAIL_ALREADY_TAKEN,
         'EMAIL_ALREADY_TAKEN'
       );
-    } else if (emailTaken == false) {
+    } else {
       const success = await usersService.updateUser(id, name, email);
       if (!success) {
         throw errorResponder(
