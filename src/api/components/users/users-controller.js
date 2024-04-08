@@ -50,6 +50,13 @@ async function createUser(request, response, next) {
     const name = request.body.name;
     const email = request.body.email;
     const password = request.body.password;
+    const password_confirm = request.body.confrimPassword;
+
+    // Konfirmasi password yang diisi ini harus sama dengan password yang diisi. Jika
+    // tidak sama, maka kembalikan error dengan status code 403 (INVALID_PASSWORD).
+    if (password != password_confirm) {
+      throw errorResponder(errorTypes.INVALID_PASSWORD, 'Invalid Password');
+    }
 
     //Jika email sudah terdaftar sebelumnya,
     // maka kembalikan error dengan status code 409(EMAIL_ALREADY_TAKEN).
