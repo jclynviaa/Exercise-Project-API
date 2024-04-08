@@ -59,7 +59,7 @@ async function createUser(request, response, next) {
         errorTypes.EMAIL_ALREADY_TAKEN,
         'EMAIL_ALREADY_TAKEN'
       );
-    } else if (emailTaken == false) {
+    } else {
       const success = await usersService.createUser(name, email, password);
       if (!success) {
         throw errorResponder(
