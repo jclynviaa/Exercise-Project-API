@@ -1,5 +1,6 @@
 const usersRepository = require('./users-repository');
 const { hashPassword } = require('../../../utils/password');
+const { passwordMatched } = require('../../../utils/password');
 
 /**
  * Get list of users
