@@ -50,31 +50,31 @@ async function createUser(request, response, next) {
     const name = request.body.name;
     const email = request.body.email;
     const password = request.body.password;
-    const password_confirm = request.body.confrimPassword;
+    const password_confirm = request.body.password_confirm;
 
     // Konfirmasi password yang diisi ini harus sama dengan password yang diisi. Jika
     // tidak sama, maka kembalikan error dengan status code 403 (INVALID_PASSWORD).
     if (password != password_confirm) {
       throw errorResponder(errorTypes.INVALID_PASSWORD, 'Invalid Password');
-    }
-
-    //Jika email sudah terdaftar sebelumnya,
-    // maka kembalikan error dengan status code 409(EMAIL_ALREADY_TAKEN).
-    const emailTaken = await usersService.isEmailTaken(email);
-    if (emailTaken == true) {
-      throw errorResponder(
-        errorTypes.EMAIL_ALREADY_TAKEN,
-        'EMAIL_ALREADY_TAKEN'
-      );
     } else {
-      const success = await usersService.createUser(name, email, password);
-      if (!success) {
+      //Jika email sudah terdaftar sebelumnya,
+      // maka kembalikan error dengan status code 409(EMAIL_ALREADY_TAKEN).
+      const emailTaken = await usersService.isEmailTaken(email);
+      if (emailTaken == true) {
         throw errorResponder(
-          errorTypes.UNPROCESSABLE_ENTITY,
-          'Failed to create user'
+          errorTypes.EMAIL_ALREADY_TAKEN,
+          'EMAIL_ALREADY_TAKEN'
         );
+      } else {
+        const success = await usersService.createUser(name, email, password);
+        if (!success) {
+          throw errorResponder(
+            errorTypes.UNPROCESSABLE_ENTITY,
+            'Failed to create user'
+          );
+        }
+        return response.status(200).json({ name, email });
       }
-      return response.status(200).json({ name, email });
     }
   } catch (error) {
     return next(error);
