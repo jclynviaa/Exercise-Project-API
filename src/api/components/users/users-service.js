@@ -117,16 +117,20 @@ async function isEmailTaken(email) {
   }
 }
 
-async function check_oldPassword(userId, oldPassword, newPassword) {
+async function check_oldPassword(id, oldPassword, newPassword) {
   try {
     const check_oldPassword = await passwordMatched(oldPassword, user.password);
     if (!check_oldPassword) {
-      return false;
+      return null;
     }
 
     const hashedPassword = await hashPassword(newPassword);
+    const user = await usersRepository.getUser(id);
+    if (!user) {
+      return null;
+    }
 
-    await usersRepository.changePassword(userId, hashedPassword);
+    await usersRepository.changePassword(id, hashedPassword);
     return true;
   } catch (error) {
     throw error;
