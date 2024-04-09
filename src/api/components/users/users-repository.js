@@ -72,6 +72,19 @@ async function checkEmailExists(email) {
   }
 }
 
+async function changePassword(id, password) {
+  return User.updateOne(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        password,
+      },
+    }
+  );
+}
+
 module.exports = {
   getUsers,
   getUser,
@@ -79,4 +92,5 @@ module.exports = {
   updateUser,
   deleteUser,
   checkEmailExists,
+  changePassword,
 };
