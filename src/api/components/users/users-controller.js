@@ -142,7 +142,7 @@ async function deleteUser(request, response, next) {
   }
 }
 
-async function changePassword(req, res, next) {
+async function changePassword(request, response, next) {
   try {
     const userId = request.params.id;
     const oldPassword = request.body.oldPassword;
