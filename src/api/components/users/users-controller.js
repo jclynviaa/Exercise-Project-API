@@ -142,6 +142,52 @@ async function deleteUser(request, response, next) {
   }
 }
 
+async function changePassword(req, res, next) {
+  try {
+    const userId = request.params.id;
+    const oldPassword = request.body.oldPassword;
+    const newPassword = request.body.newPassword;
+    const confirmPassword = request.body.confirmPassword;
+
+    // Konfirmasi password baru harus sama dengan password baru
+    if (newPassword != confirmPassword) {
+      throw errorResponder(
+        errorTypes.INVALID_PASSWORD,
+        'New Password and Confirm Password do not match'
+      );
+    }
+
+    // Password lama harus sama dengan password saat ini.
+    else if (oldPassword == newPassword) {
+      throw errorResponder(
+        errorTypes.INVALID_PASSWORD,
+        'Old Password must be the same as the current password'
+      );
+    }
+
+    // Check password lama apakah sama dengan data di mongodb
+    else {
+      const success = await usersService.changePassword(
+        userId,
+        oldPassword,
+        newPassword
+      );
+      if (!success) {
+        throw errorResponder(
+          errorTypes.UNPROCESSABLE_ENTITY,
+          'Failed to change Password'
+        );
+      }
+
+      return response
+        .status(200)
+        .json({ message: 'Password changed successfully' });
+    }
+  } catch (error) {
+    return next(error);
+  }
+}
+
 module.exports = {
   getUsers,
   getUser,
