@@ -117,6 +117,22 @@ async function isEmailTaken(email) {
   }
 }
 
+async function check_oldPassword(userId, oldPassword, newPassword) {
+  try {
+    const check_oldPassword = await passwordMatched(oldPassword, user.password);
+    if (!check_oldPassword) {
+      return false;
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await usersRepository.changePassword(userId, hashedPassword);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   getUsers,
   getUser,
@@ -124,4 +140,5 @@ module.exports = {
   updateUser,
   deleteUser,
   isEmailTaken,
+  check_oldPassword,
 };

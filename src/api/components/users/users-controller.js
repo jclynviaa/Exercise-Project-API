@@ -167,21 +167,19 @@ async function changePassword(req, res, next) {
 
     // Check password lama apakah sama dengan data di mongodb
     else {
-      const success = await usersService.changePassword(
+      const check_oldPassword = await usersService.check_oldPassword(
         userId,
         oldPassword,
         newPassword
       );
-      if (!success) {
+      if (!check_oldPassword) {
         throw errorResponder(
           errorTypes.UNPROCESSABLE_ENTITY,
           'Failed to change Password'
         );
       }
 
-      return response
-        .status(200)
-        .json({ message: 'Password changed successfully' });
+      return response.status(200).json({ userId, oldPassword, newPassword });
     }
   } catch (error) {
     return next(error);
