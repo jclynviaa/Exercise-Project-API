@@ -179,7 +179,14 @@ async function changePassword(request, response, next) {
         );
       }
 
-      return response.status(200).json({ id, oldPassword, newPassword });
+      return response
+        .status(200)
+        .json({
+          id,
+          oldPassword,
+          newPassword,
+          message: 'Password changed successfully',
+        });
     }
   } catch (error) {
     return next(error);
