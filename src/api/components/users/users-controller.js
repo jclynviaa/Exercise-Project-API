@@ -144,7 +144,7 @@ async function deleteUser(request, response, next) {
 
 async function changePassword(request, response, next) {
   try {
-    const userId = request.params.id;
+    const id = request.params.id;
     const oldPassword = request.body.oldPassword;
     const newPassword = request.body.newPassword;
     const confirmPassword = request.body.confirmPassword;
@@ -168,7 +168,7 @@ async function changePassword(request, response, next) {
     // Check password lama apakah sama dengan data di mongodb
     else {
       const check_oldPassword = await usersService.check_oldPassword(
-        userId,
+        id,
         oldPassword,
         newPassword
       );
@@ -179,7 +179,7 @@ async function changePassword(request, response, next) {
         );
       }
 
-      return response.status(200).json({ userId, oldPassword, newPassword });
+      return response.status(200).json({ id, oldPassword, newPassword });
     }
   } catch (error) {
     return next(error);
